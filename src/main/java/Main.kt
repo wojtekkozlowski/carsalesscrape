@@ -26,15 +26,24 @@ fun main() {
 }
 
 fun scrape(carToScrape: CarToScrape) {
+    val links = getLinks(carToScrape)
+    print("${links.size} pages to scrape for ${carToScrape.filename} ")
+    val cars = getCars(links)
+    writeCSV(cars, carToScrape.filename)
+    println("done")
+}
+
+private fun getLinks(carToScrape: CarToScrape): List<String> {
     val doc = Jsoup.connect(carToScrape.url).get()
     val pages = if (isSiteVersionA(doc)) {
         doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
     } else {
         doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
     }
-    val links = IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
-    print("${links.size} pages to scrape for ${carToScrape.filename} ")
+    return IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
+}
 
+private fun getCars(links: List<String>): List<Car> {
     val allCars = ConcurrentLinkedQueue<Car>()
     runBlocking {
         links.forEach {
@@ -45,8 +54,7 @@ fun scrape(carToScrape: CarToScrape) {
             }
         }
     }
-    writeCSV(allCars.toList(), carToScrape.filename)
-    println("done")
+    return allCars.toList()
 }
 
 fun getForVersionA(it: Document): List<Car> {
@@ -96,9 +104,7 @@ fun getForVersionB(doc: Document): List<Car> {
 private fun writeCSV(cars: List<Car>, filename: String) {
     File(filename).bufferedWriter().apply {
         write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
-        cars.forEach {
-            write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
-        }
+        cars.forEach { write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n") }
         flush()
         close()
     }

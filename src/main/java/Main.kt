@@ -39,7 +39,7 @@ fun scrape(carToScrape: CarToScrape) {
     runBlocking {
         links.forEach {
             launch {
-                val doc = getDoc(it)
+                val doc = withContext(Dispatchers.IO) { Jsoup.connect(it).get() }
                 val cars = if (isSiteVersionA(doc)) getForVersionA(doc) else getForVersionB(doc)
                 allCars.addAll(cars)
             }
@@ -47,11 +47,6 @@ fun scrape(carToScrape: CarToScrape) {
     }
     writeCSV(allCars.toList(), carToScrape.filename)
     println("done")
-}
-
-
-suspend fun getDoc(url: String) = withContext(Dispatchers.IO) {
-    Jsoup.connect(url).get()
 }
 
 fun getForVersionA(it: Document): List<Car> {

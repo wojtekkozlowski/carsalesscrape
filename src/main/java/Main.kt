@@ -1,7 +1,6 @@
-import com.google.gson.GsonBuilder
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.io.FileWriter
+import java.io.File
 import java.util.*
 import java.util.stream.Collectors.toList
 import java.util.stream.IntStream
@@ -14,11 +13,11 @@ fun String.toNumber() = toCharArray().filter { it.isDigit() }.joinToString(separ
 
 fun main() {
     listOf(
-            CarToScrape("/tmp/toyota.json", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.State.New%20South%20Wales._.Drive.4x4._.%28C.Make.Toyota._.Model.Hilux.%29%29&Sort=~Odometer"),
-            CarToScrape("/tmp/triton.json", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/ranger.json", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/amarok.json", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/dmax.json", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
+            CarToScrape("/tmp/hilux.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.State.New%20South%20Wales._.Drive.4x4._.%28C.Make.Toyota._.Model.Hilux.%29%29&Sort=~Odometer"),
+            CarToScrape("/tmp/triton.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/ranger.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/amarok.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/dmax.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
     ).forEach { scrape(it) }
 }
 
@@ -44,15 +43,13 @@ fun scrape(carToScrape: CarToScrape) {
             .filter(Objects::nonNull)
             .flatMap { it!!.toList() }
 
-    FileWriter(carToScrape.filename).apply {
-        GsonBuilder().setPrettyPrinting().create().toJson(cars, this)
-        flush()
-        close()
+    val out = File(carToScrape.filename).bufferedWriter()
+    out.write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
+    cars.forEach {
+        out.write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
     }
-
     println("done")
 }
-
 
 fun getForVersionA(it: Document): List<Car> {
     val cars = it.getElementsByClass("listing-item").mapNotNull { element ->

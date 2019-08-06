@@ -27,14 +27,14 @@ fun main() {
 }
 
 fun scrape(carToScrape: CarToScrape) {
-    val links = getLinks(carToScrape)
+    val links = createLinks(carToScrape)
     print("${links.size} pages to scrape for ${carToScrape.filename} ")
-    val cars = getCars(links)
+    val cars = getAllCars(links)
     writeCSV(cars, carToScrape.filename)
     println("done")
 }
 
-private fun getLinks(carToScrape: CarToScrape): List<String> {
+private fun createLinks(carToScrape: CarToScrape): List<String> {
     val doc = Jsoup.connect(carToScrape.url).get()
     val pages = if (isSiteVersionA(doc)) {
         doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
@@ -44,7 +44,7 @@ private fun getLinks(carToScrape: CarToScrape): List<String> {
     return IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
 }
 
-private fun getCars(links: List<String>): List<Car> {
+private fun getAllCars(links: List<String>): List<Car> {
     val allCars = ConcurrentLinkedQueue<Car>()
     runBlocking {
         links.forEach {

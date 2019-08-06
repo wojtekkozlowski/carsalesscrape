@@ -23,7 +23,7 @@ fun main() {
             CarToScrape("/tmp/amarok.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
             CarToScrape("/tmp/dmax.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
     ).forEach { scrape(it) }
-    println("done and done")
+    println("done and doneit co")
 }
 
 fun scrape(carToScrape: CarToScrape) {
@@ -50,7 +50,7 @@ private fun getCars(links: List<String>): List<Car> {
         links.forEach {
             launch {
                 val doc = withContext(Dispatchers.IO) { Jsoup.connect(it).get() }
-                val cars = if (isSiteVersionA(doc)) getForVersionA(doc) else getForVersionB(doc)
+                val cars = if (isSiteVersionA(doc)) scrapeForVersionA(doc) else scrapeForVersionB(doc)
                 allCars.addAll(cars)
             }
         }
@@ -58,7 +58,7 @@ private fun getCars(links: List<String>): List<Car> {
     return allCars.toList()
 }
 
-fun getForVersionA(it: Document): List<Car> {
+fun scrapeForVersionA(it: Document): List<Car> {
     val cars = it.getElementsByClass("listing-item").mapNotNull { element ->
         try {
             val nameYear = element.getElementsByAttribute("data-webm-clickvalue").first { it -> it.attributes().map { it.value }.contains("sv-title") }.text()
@@ -80,7 +80,7 @@ fun getForVersionA(it: Document): List<Car> {
     return cars
 }
 
-fun getForVersionB(doc: Document): List<Car> {
+fun scrapeForVersionB(doc: Document): List<Car> {
     val cars = doc.getElementsByClass("listing-item").mapNotNull { element ->
         try {
             val nameYear = element.getElementsByAttribute("data-webm-clickvalue").first { it -> it.attributes().map { it.value }.contains("sv-view-title") }.text()

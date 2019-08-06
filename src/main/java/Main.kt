@@ -43,11 +43,7 @@ fun scrape(carToScrape: CarToScrape) {
             .filter(Objects::nonNull)
             .flatMap { it!!.toList() }
 
-    val out = File(carToScrape.filename).bufferedWriter()
-    out.write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
-    cars.forEach {
-        out.write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
-    }
+    writeCSV(cars, carToScrape.filename)
     println("done")
 }
 
@@ -93,4 +89,12 @@ fun getForVersionB(doc: Document): List<Car> {
     }
     print(".")
     return cars
+}
+
+private fun writeCSV(cars: List<Car>, filename: String) {
+    val out = File(filename).bufferedWriter()
+    out.write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
+    cars.forEach {
+        out.write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
+    }
 }

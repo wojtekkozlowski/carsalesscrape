@@ -94,9 +94,12 @@ fun getForVersionB(doc: Document): List<Car> {
 }
 
 private fun writeCSV(cars: List<Car>, filename: String) {
-    val out = File(filename).bufferedWriter()
-    out.write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
-    cars.forEach {
-        out.write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
+    File(filename).bufferedWriter().apply {
+        write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
+        cars.forEach {
+            write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n")
+        }
+        flush()
+        close()
     }
 }

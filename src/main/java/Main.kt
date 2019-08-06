@@ -1,14 +1,18 @@
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.File
-import java.util.*
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.stream.Collectors.toList
 import java.util.stream.IntStream
 
 data class Car(val name: String, val year: Int, val price: Int, val odometer: Int, val bodyStyle: String, val transmission: String, val engine: String, val url: String)
 data class CarToScrape(val filename: String, val url: String)
 
-fun siteVersion(doc: Document) = doc.getElementsByClass("carsales").size
+fun isSiteVersionA(doc: Document) = doc.getElementsByClass("carsales").size == 4
 fun String.toNumber() = toCharArray().filter { it.isDigit() }.joinToString(separator = "").toInt()
 
 fun main() {
@@ -23,28 +27,31 @@ fun main() {
 
 fun scrape(carToScrape: CarToScrape) {
     val doc = Jsoup.connect(carToScrape.url).get()
-    val pages = if (siteVersion(doc) == 4) {
+    val pages = if (isSiteVersionA(doc)) {
         doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
     } else {
         doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
     }
     val links = IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
     print("${links.size} pages to scrape for ${carToScrape.filename} ")
-    val cars = links.parallelStream()
-            .map { Jsoup.connect(it).get() }
-            .map {
-                if (siteVersion(it) == 4) {
-                    getForVersionA(it)
-                } else {
-                    getForVersionB(it)
-                }
-            }
-            .collect(toList())
-            .filter(Objects::nonNull)
-            .flatMap { it!!.toList() }
 
-    writeCSV(cars, carToScrape.filename)
+    val allCars = ConcurrentLinkedQueue<Car>()
+    runBlocking {
+        links.forEach {
+            launch {
+                val doc = getDoc(it)
+                val cars = if (isSiteVersionA(doc)) getForVersionA(doc) else getForVersionB(doc)
+                allCars.addAll(cars)
+            }
+        }
+    }
+    writeCSV(allCars.toList(), carToScrape.filename)
     println("done")
+}
+
+
+suspend fun getDoc(url: String) = withContext(Dispatchers.IO) {
+    Jsoup.connect(url).get()
 }
 
 fun getForVersionA(it: Document): List<Car> {

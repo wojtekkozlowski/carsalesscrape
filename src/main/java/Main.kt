@@ -23,6 +23,7 @@ fun main() {
             CarToScrape("/tmp/amarok.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
             CarToScrape("/tmp/dmax.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
     ).forEach { scrape(it) }
+    println("done and done")
 }
 
 fun scrape(carToScrape: CarToScrape) {

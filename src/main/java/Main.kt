@@ -53,14 +53,12 @@ fun scrape(carToScrape: CarToScrape) {
 private fun createLinks(carToScrape: CarToScrape): List<String> {
     val doc = Jsoup.connect(carToScrape.url).get()
     val siteVersionA = isSiteVersionA(doc)
-    return if (siteVersionA) {
-        val pages = doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
-        (0..pages).map { "${carToScrape.url}&offset=${it * 12}" }
+    val pages = if (siteVersionA) {
+          doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
     } else {
-        val pages = doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
-        (0..pages).map { "${carToScrape.url}?offset=${it * 12}" }
+        doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
     }
-
+    return (0..pages).map { "${carToScrape.url}&offset=${it * 12}" }
 }
 
 private fun scrapeAllLinks(links: List<String>): List<Car> {

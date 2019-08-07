@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ecb05bd0-39d7-4a97-8f65-cc78271cd593" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Car.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Car.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/CarToScrape.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/CarToScrape.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/carfind.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/carfind.kotlin_module" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$comparator$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$createLinks$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$getAllCars$1$invokeSuspend$$inlined$forEach$lambda$1$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$getAllCars$1$invokeSuspend$$inlined$forEach$lambda$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$getAllCars$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$score$decreaseValue$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/MainKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainKt.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -46,8 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="68" column="23" lean-forward="true" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+            <state relative-caret-position="458">
+              <caret line="61" selection-start-line="61" selection-end-line="61" />
               <folding>
                 <element signature="e#0#346#0" expanded="true" />
               </folding>
@@ -194,7 +183,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565177954771" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565178189799" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
@@ -303,11 +292,11 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32967034" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.4223684" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.3631579" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3631579" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32967034" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.189011" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.1881579" />
       <window_info anchor="bottom" id="DB Execution Console" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
@@ -360,29 +349,31 @@
           <properties />
           <option name="timeStamp" value="49" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Main.kt</url>
-          <line>104</line>
-          <properties />
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Main.kt</url>
-          <line>80</line>
-          <properties />
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Main.kt</url>
-          <line>45</line>
-          <properties />
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>element.getElementsByAttribute(&quot;data-webm-clickvalue&quot;).first { it -&gt; it.attributes().map { it.value }.contains(&quot;sv-title&quot;) }.text()</expression-string>
+        <language-id>kotlin</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>element.getElementsByAttribute(&quot;data-webm-clickvalue&quot;).first { it -&gt; it.attributes().map { it.value }.contains(&quot;sv-view-title&quot;) }.text()</expression-string>
+        <language-id>kotlin</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>element.getElementsByAttribute(&quot;data-webm-clickvalue&quot;)</expression-string>
+        <language-id>kotlin</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>doc.getElementsByClass(&quot;listing-item&quot;)</expression-string>
+        <language-id>kotlin</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>it</expression-string>
         <language-id>kotlin</language-id>
@@ -405,26 +396,6 @@
       </expression>
       <expression>
         <expression-string>doc.getElementsContainingOwnText(&quot;cars for sale in&quot;)</expression-string>
-        <language-id>kotlin</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>doc</expression-string>
-        <language-id>kotlin</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>doc.getElementsContainingOwnText(&quot;cars for sale in Australia&quot;)</expression-string>
-        <language-id>kotlin</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>doc.getElementsByClass(&quot;carsales&quot;).size</expression-string>
-        <language-id>kotlin</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>https://www.carsales.com.au/cars/nissan/navara/st-r-badge/d22-series/new-south-wales-state/</expression-string>
         <language-id>kotlin</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -506,8 +477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Main.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="68" column="23" lean-forward="true" selection-start-line="68" selection-start-column="23" selection-end-line="68" selection-end-column="23" />
+        <state relative-caret-position="458">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
           <folding>
             <element signature="e#0#346#0" expanded="true" />
           </folding>

@@ -8,8 +8,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.FileReader
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.stream.Collectors.toList
-import java.util.stream.IntStream
 
 data class CarToScrape(val filename: String, val url: String)
 
@@ -19,9 +17,10 @@ fun main() {
 }
 
 fun playWithIt() {
-    val cars: List<Car> = Gson().fromJson(FileReader("/tmp/triton.json"), TypeToken.getParameterized(ArrayList::class.java, Car::class.java).type)
+    val cars: List<Car> = Gson().fromJson(FileReader("/tmp/ranger.json"), TypeToken.getParameterized(ArrayList::class.java, Car::class.java).type)
     val sorted = cars
-            .filter { it.price < 27500 }
+            .filter { it.price < 25000 }
+//            .filter { it.odometer > 85000 }
             .filter { it.bodyStyle == "Ute" }
             .filter { it.transmission == "Automatic" }
             .sortedWith(comparator)
@@ -32,6 +31,7 @@ fun playWithIt() {
 
 fun scrape() {
     listOf(
+            CarToScrape("/tmp/d22", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4._.(C.Make.Nissan._.(C.Model.Navara._.Series.D22.)))"),
             CarToScrape("/tmp/hilux", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.(C.Make.Toyota._.Model.Hilux.)_.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4.)"),
             CarToScrape("/tmp/triton", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
             CarToScrape("/tmp/ranger", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
@@ -52,12 +52,15 @@ fun scrape(carToScrape: CarToScrape) {
 
 private fun createLinks(carToScrape: CarToScrape): List<String> {
     val doc = Jsoup.connect(carToScrape.url).get()
-    val pages = if (isSiteVersionA(doc)) {
-        doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
+    val siteVersionA = isSiteVersionA(doc)
+    return if (siteVersionA) {
+        val pages = doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
+        (0..pages).map { "${carToScrape.url}&offset=${it * 12}" }
     } else {
-        doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
+        val pages = doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
+        (0..pages).map { "${carToScrape.url}?offset=${it * 12}" }
     }
-    return IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
+
 }
 
 private fun scrapeAllLinks(links: List<String>): List<Car> {
@@ -66,7 +69,7 @@ private fun scrapeAllLinks(links: List<String>): List<Car> {
         links.forEach {
             launch {
                 val doc = withContext(Dispatchers.IO) { Jsoup.connect(it).get() }
-                val cars = if (isSiteVersionA(doc)) scrapeCarsVersionAPage(doc) else scrapeCarsFromVersionBPage(doc)
+                val cars = if (isSiteVersionA(doc)) scrapeCarsFromVersionAPage(doc) else scrapeCarsFromVersionBPage(doc)
                 allCars.addAll(cars)
             }
         }
@@ -74,7 +77,7 @@ private fun scrapeAllLinks(links: List<String>): List<Car> {
     return allCars.toList()
 }
 
-fun scrapeCarsVersionAPage(it: Document): List<Car> {
+fun scrapeCarsFromVersionAPage(it: Document): List<Car> {
     val cars = it.getElementsByClass("listing-item").mapNotNull { element ->
         try {
             val nameYear = element.getElementsByAttribute("data-webm-clickvalue").first { it -> it.attributes().map { it.value }.contains("sv-title") }.text()

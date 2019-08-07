@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ecb05bd0-39d7-4a97-8f65-cc78271cd593" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Car.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Car.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/FileWriters.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/FileOperations.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/CarKt$comparator$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/CarKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/CarKt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/CarToScrape.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/CarToScrape.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/FileWritersKt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/carfind.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/carfind.kotlin_module" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1$invokeSuspend$$inlined$forEach$lambda$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1$invokeSuspend$$inlined$forEach$lambda$1$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1$invokeSuspend$$inlined$forEach$lambda$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1$invokeSuspend$$inlined$forEach$lambda$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainKt$scrapeAllLinks$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/MainKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/MainKt.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -35,10 +47,31 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Main.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="61" selection-start-line="61" selection-end-line="61" />
+            <state relative-caret-position="180">
+              <caret line="18" column="11" lean-forward="true" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
               <folding>
-                <element signature="e#0#346#0" expanded="true" />
+                <element signature="e#0#281#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Car.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/FileOperations.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#73#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -125,8 +158,8 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/Car.kt" />
-        <option value="$PROJECT_DIR$/src/main/java/FileWriters.kt" />
         <option value="$PROJECT_DIR$/src/main/java/Other.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/FileWriters.kt" />
         <option value="$PROJECT_DIR$/src/main/java/Main.kt" />
       </list>
     </option>
@@ -183,7 +216,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565178189799" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1565178790383" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
@@ -291,12 +324,12 @@
       <window_info id="Favorites" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32967034" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.4223684" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4223684" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3631579" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32967034" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.1881579" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.1881579" />
       <window_info anchor="bottom" id="DB Execution Console" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="10" />
@@ -475,12 +508,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/FileOperations.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="4" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Car.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="4" selection-start-line="24" selection-start-column="4" selection-end-line="24" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Main.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="61" selection-start-line="61" selection-end-line="61" />
+        <state relative-caret-position="180">
+          <caret line="18" column="11" lean-forward="true" selection-start-line="18" selection-start-column="11" selection-end-line="18" selection-end-column="11" />
           <folding>
-            <element signature="e#0#346#0" expanded="true" />
+            <element signature="e#0#281#0" expanded="true" />
           </folding>
         </state>
       </provider>

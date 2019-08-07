@@ -1,33 +1,36 @@
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.io.FileReader
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.math.roundToInt
 
 data class CarToScrape(val filename: String, val url: String)
 
 fun main() {
-    scrape()
-//    playWithIt()
+//    scrape()
+    playWithIt()
 }
 
+
 fun playWithIt() {
-    val cars: List<Car> = Gson().fromJson(FileReader("/tmp/ranger.json"), TypeToken.getParameterized(ArrayList::class.java, Car::class.java).type)
-    val sorted = cars
+    listOf(
+            "/tmp/ranger.json",
+            "/tmp/hilux.json",
+            "/tmp/triton.json"
+    )
+            .flatMap { loadCars(it) }
             .filter { it.price < 25000 }
-//            .filter { it.odometer > 85000 }
             .filter { it.bodyStyle == "Ute" }
             .filter { it.transmission == "Automatic" }
-            .sortedWith(comparator)
-    sorted.forEachIndexed { index, car ->
-        println("${index + 1}. (score ${car.score()}): ${car.url}")
-    }
+            .sortedWith(scoreComparator)
+            .forEachIndexed { index, car ->
+                println("${index + 1}. (score ${car.score().roundToInt()}): ${car.url}")
+            }
 }
+
 
 fun scrape() {
     listOf(
@@ -54,7 +57,7 @@ private fun createLinks(carToScrape: CarToScrape): List<String> {
     val doc = Jsoup.connect(carToScrape.url).get()
     val siteVersionA = isSiteVersionA(doc)
     val pages = if (siteVersionA) {
-          doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
+        doc.getElementsContainingOwnText("cars for sale in Australia").single { !it.text().contains("-") }.text().split(" ").first().toNumber() / 12
     } else {
         doc.getElementsContainingOwnText("cars for sale in New South Wales").first { it.text().endsWith(" Wales") }.text().split(" ").first().toNumber() / 12
     }

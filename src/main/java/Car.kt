@@ -22,7 +22,7 @@ fun Car.score(): Double {
     return Math.sqrt(Math.pow(odo, 2.0) + Math.pow(pr, 2.0)) * (1.0 / depreciation)
 }
 
-val comparator = Comparator<Car> { o1, o2 ->
+val scoreComparator = Comparator<Car> { o1, o2 ->
     when {
         o1.score() - o2.score() == 0.0 -> 0
         o1.score() - o2.score() < 0 -> -1

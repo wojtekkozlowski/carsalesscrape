@@ -1,5 +1,7 @@
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.File
+import java.io.FileReader
 import java.io.FileWriter
 
 fun writeJson(cars: List<Car>, filename: String) {
@@ -18,3 +20,5 @@ fun writeCSV(cars: List<Car>, filename: String) {
         close()
     }
 }
+
+fun loadCars(s: String): List<Car> = Gson().fromJson(FileReader(s), TypeToken.getParameterized(ArrayList::class.java, Car::class.java).type)

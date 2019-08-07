@@ -1,27 +1,42 @@
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.io.File
+import java.io.FileReader
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.stream.Collectors.toList
 import java.util.stream.IntStream
 
-data class Car(val name: String, val year: Int, val price: Int, val odometer: Int, val bodyStyle: String, val transmission: String, val engine: String, val url: String)
 data class CarToScrape(val filename: String, val url: String)
 
-fun isSiteVersionA(doc: Document) = doc.getElementsByClass("carsales").size == 4
-fun String.toNumber() = toCharArray().filter { it.isDigit() }.joinToString(separator = "").toInt()
-
 fun main() {
+    scrape()
+//    playWithIt()
+}
+
+fun playWithIt() {
+    val cars: List<Car> = Gson().fromJson(FileReader("/tmp/triton.json"), TypeToken.getParameterized(ArrayList::class.java, Car::class.java).type)
+    val sorted = cars
+            .filter { it.price < 27500 }
+            .filter { it.bodyStyle == "Ute" }
+            .filter { it.transmission == "Automatic" }
+            .sortedWith(comparator)
+    sorted.forEachIndexed { index, car ->
+        println("${index + 1}. (score ${car.score()}): ${car.url}")
+    }
+}
+
+fun scrape() {
     listOf(
-            CarToScrape("/tmp/hilux.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.State.New%20South%20Wales._.Drive.4x4._.%28C.Make.Toyota._.Model.Hilux.%29%29&Sort=~Odometer"),
-            CarToScrape("/tmp/triton.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/ranger.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/amarok.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/dmax.csv", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
+            CarToScrape("/tmp/hilux", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.(C.Make.Toyota._.Model.Hilux.)_.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4.)"),
+            CarToScrape("/tmp/triton", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/ranger", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/amarok", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("/tmp/dmax", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
     ).forEach { scrape(it) }
     println("done and done")
 }
@@ -29,8 +44,9 @@ fun main() {
 fun scrape(carToScrape: CarToScrape) {
     val links = createLinks(carToScrape)
     print("${links.size} pages to scrape for ${carToScrape.filename} ")
-    val cars = getAllCars(links)
+    val cars = scrapeAllLinks(links)
     writeCSV(cars, carToScrape.filename)
+    writeJson(cars, carToScrape.filename)
     println("done")
 }
 
@@ -44,13 +60,13 @@ private fun createLinks(carToScrape: CarToScrape): List<String> {
     return IntStream.rangeClosed(0, pages).mapToObj { "${carToScrape.url}&offset=${it * 12}" }.collect(toList())
 }
 
-private fun getAllCars(links: List<String>): List<Car> {
+private fun scrapeAllLinks(links: List<String>): List<Car> {
     val allCars = ConcurrentLinkedQueue<Car>()
     runBlocking {
         links.forEach {
             launch {
                 val doc = withContext(Dispatchers.IO) { Jsoup.connect(it).get() }
-                val cars = if (isSiteVersionA(doc)) scrapeForVersionA(doc) else scrapeForVersionB(doc)
+                val cars = if (isSiteVersionA(doc)) scrapeCarsVersionAPage(doc) else scrapeCarsFromVersionBPage(doc)
                 allCars.addAll(cars)
             }
         }
@@ -58,7 +74,7 @@ private fun getAllCars(links: List<String>): List<Car> {
     return allCars.toList()
 }
 
-fun scrapeForVersionA(it: Document): List<Car> {
+fun scrapeCarsVersionAPage(it: Document): List<Car> {
     val cars = it.getElementsByClass("listing-item").mapNotNull { element ->
         try {
             val nameYear = element.getElementsByAttribute("data-webm-clickvalue").first { it -> it.attributes().map { it.value }.contains("sv-title") }.text()
@@ -80,7 +96,7 @@ fun scrapeForVersionA(it: Document): List<Car> {
     return cars
 }
 
-fun scrapeForVersionB(doc: Document): List<Car> {
+fun scrapeCarsFromVersionBPage(doc: Document): List<Car> {
     val cars = doc.getElementsByClass("listing-item").mapNotNull { element ->
         try {
             val nameYear = element.getElementsByAttribute("data-webm-clickvalue").first { it -> it.attributes().map { it.value }.contains("sv-view-title") }.text()
@@ -102,11 +118,3 @@ fun scrapeForVersionB(doc: Document): List<Car> {
     return cars
 }
 
-private fun writeCSV(cars: List<Car>, filename: String) {
-    File(filename).bufferedWriter().apply {
-        write("name,year,price,odometer,bodyStyle,transmission,engine,url\n")
-        cars.forEach { write("${it.name},${it.year},${it.price},${it.odometer},${it.bodyStyle},${it.transmission},${it.engine},${it.url}\n") }
-        flush()
-        close()
-    }
-}

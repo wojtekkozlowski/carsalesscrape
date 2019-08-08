@@ -5,31 +5,14 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.util.concurrent.ConcurrentLinkedQueue
-import kotlin.math.roundToInt
 
 data class CarToScrape(val filename: String, val url: String)
 
 fun main() {
     scrape()
 //    playWithIt()
+//    averageKms()
 }
-
-fun playWithIt() {
-    listOf(
-            "$scrapePath/ranger_$now.json",
-            "$scrapePath/hilux_$now.json",
-            "$scrapePath/triton_$now.json"
-    )
-            .flatMap { loadCars(it) }
-            .filter { it.price < 25000 }
-            .filter { it.bodyStyle == "Ute" }
-            .filter { it.transmission == "Automatic" }
-            .sortedWith(scoreComparator)
-            .forEachIndexed { index, car ->
-                println("${index + 1}. (score ${car.score().roundToInt()}): ${car.url}")
-            }
-}
-
 
 fun scrape() {
     createScrapeDir()

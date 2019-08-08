@@ -10,16 +10,15 @@ import kotlin.math.roundToInt
 data class CarToScrape(val filename: String, val url: String)
 
 fun main() {
-//    scrape()
-    playWithIt()
+    scrape()
+//    playWithIt()
 }
-
 
 fun playWithIt() {
     listOf(
-            "/tmp/ranger.json",
-            "/tmp/hilux.json",
-            "/tmp/triton.json"
+            "$scrapePath/ranger_$now.json",
+            "$scrapePath/hilux_$now.json",
+            "$scrapePath/triton_$now.json"
     )
             .flatMap { loadCars(it) }
             .filter { it.price < 25000 }
@@ -33,13 +32,14 @@ fun playWithIt() {
 
 
 fun scrape() {
+    createScrapeDir()
     listOf(
-            CarToScrape("/tmp/d22", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4._.(C.Make.Nissan._.(C.Model.Navara._.Series.D22.)))"),
-            CarToScrape("/tmp/hilux", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.(C.Make.Toyota._.Model.Hilux.)_.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4.)"),
-            CarToScrape("/tmp/triton", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/ranger", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/amarok", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
-            CarToScrape("/tmp/dmax", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
+            CarToScrape("d22", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4._.(C.Make.Nissan._.(C.Model.Navara._.Series.D22.)))"),
+            CarToScrape("hilux", "https://www.carsales.com.au/cars/results/?q=(And.Service.Carsales._.(C.Make.Toyota._.Model.Hilux.)_.State.New+South+Wales._.BodyStyle.Ute._.Drive.4x4.)"),
+            CarToScrape("triton", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Mitsubishi._.Model.Triton.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("ranger", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Ford._.Model.Ranger.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("amarok", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Volkswagen._.Model.Amarok.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel"),
+            CarToScrape("dmax", "https://www.carsales.com.au/cars/results/?q=%28And.Service.Carsales._.%28C.Make.Isuzu._.Model.D-MAX.%29_.State.New%20South%20Wales._.Drive.4x4.%29&WT.z_srchsrcx=makemodel")
     ).forEach { scrape(it) }
     println("done and done")
 }
@@ -50,7 +50,7 @@ fun scrape(carToScrape: CarToScrape) {
     val cars = scrapeAllLinks(links)
     writeCSV(cars, carToScrape.filename)
     writeJson(cars, carToScrape.filename)
-    println("done")
+    println("done, ${cars.size} cars")
 }
 
 private fun createLinks(carToScrape: CarToScrape): List<String> {
@@ -121,4 +121,14 @@ fun scrapeCarsFromVersionBPage(doc: Document): List<Car> {
     print(".")
     return cars
 }
+
+class Main {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            scrape()
+        }
+    }
+}
+
 

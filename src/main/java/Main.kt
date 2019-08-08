@@ -10,7 +10,7 @@ data class CarToScrape(val filename: String, val url: String)
 
 fun main() {
     scrape()
-//    playWithIt()
+//    filterDown()
 //    averageKms()
 }
 
